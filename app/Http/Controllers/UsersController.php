@@ -17,13 +17,13 @@ class UsersController
 
     public function create()
     {
-        return view('users.create');
+        return view('users.task.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'todo' => 'required',
+            'task' => 'required',
         ]);
 
         $lastTodo = Todos::where('user', Auth::guard('users')->id())->orderBy('todos_id', 'desc')->first();
@@ -37,36 +37,43 @@ class UsersController
 
         $todos = new Todos();
         $todos->todos_id = $nextID;
-        $calon->todo = $request->todo;
-        $calon->save();
+        $todos->user = Auth::guard('users')->id();
+        $todos->todo = $request->task;
+        $todos->is_completed = intval($request->status);
+        $todos->save();
 
-        return redirect()->route('users.index')->with('success', 'Task berhasil ditambahkan');
+        return redirect()->route('home')->with('success', 'Task berhasil ditambahkan');
     }
 
     public function edit($id)
     {
         $todo = Todos::where('user', Auth::guard('users')->id())->findOrFail($id);
-        return view('users.edit', compact('todo'));
+        return view('users.task.edit', compact('todo'));
     }
 
     public function update(Request $request, $id)
     {
+         // Log data yang diterima
+        \Log::info("Received data for update: ", $request->all());
         $request->validate([
-            'todo' => 'required',
+            'task' => 'required',
+            'status' => 'required',
         ]);
 
         $todos = Todos::where('user', Auth::guard('users')->id())->findOrFail($id);
 
-        $todos->todo = $request->todo;
+        $todos->todo = $request->task;
+        $todos->is_completed = intval($request->status);
+        $todos->user = Auth::guard('users')->id();
         $todos->save();
 
-        return redirect()->route('users.index')->with('success', 'Task berhasil diperbarui');
+        return redirect()->route('home')->with('success', 'Task berhasil diperbarui');
     }
 
     public function destroy($id)
     {
         $todo = Todos::where('user', Auth::guard('users')->id())->findOrFail($id);
         $todo->delete();
-        return redirect()->route('users.index')->with('success', 'Task berhasil dihapus.');
+        return redirect()->route('home')->with('success', 'Task berhasil dihapus.');
     }
 }

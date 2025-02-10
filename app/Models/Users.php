@@ -33,4 +33,9 @@ class Users extends Authenticatable
     public function getAuthPassword() {
         return $this->password;
     }
+
+    public function todos()
+    {
+        return $this->hasMany(Todos::class, 'user', 'username');
+    }
 }
