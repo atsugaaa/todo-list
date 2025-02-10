@@ -44,6 +44,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('users');
         Schema::dropIfExists('todos');
+        
         Schema::dropIfExists('sessions');
     }
 };
