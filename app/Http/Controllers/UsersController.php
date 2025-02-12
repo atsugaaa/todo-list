@@ -26,7 +26,7 @@ class UsersController
             'task' => 'required',
         ]);
 
-        $lastTodo = Todos::where('user', Auth::guard('users')->id())->orderBy('todos_id', 'desc')->first();
+        $lastTodo = Todos::orderBy('todos_id', 'desc')->first();
 
         if (!$lastTodo) {
             $nextID = 'T0001';

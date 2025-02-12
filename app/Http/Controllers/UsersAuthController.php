@@ -63,7 +63,7 @@ class UsersAuthController
             'username' => 'required|max:255|unique:users|min:3',
             'password' => 'required|min:8'
         ]);
-        $users = Users::where('username', $credentials['username'])->first();
+        $users = Users::where('username', $validateData['username'])->first();
         if ($users) {
             return redirect()->back()->withErrors(['error' => "username sudah terdaftar !"])->withInput($request->only('username'));
         } else {
